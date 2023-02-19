@@ -24,7 +24,12 @@ onMounted(() => {
   console.log(mobile.value); // true
 });
 
-watch(width, (val, oldVal) => {
-  console.log(`watch: ${oldVal} -> ${val}`);
+watch(width, (width, oldWidth) => {
+  console.log(`watch: ${oldWidth} -> ${width}`);
 });
+
+/*watch(
+  () => width,
+  (width, prevWidth) => console.log(`watch: ${prevWidth} -> ${width}`)
+);*/
 </script>
