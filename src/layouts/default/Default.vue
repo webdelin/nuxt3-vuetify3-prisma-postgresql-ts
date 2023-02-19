@@ -1,24 +1,30 @@
 <template>
-  <v-app :theme="theme">
+  <v-app :theme="appStore.theme">
     <v-main>
-    <default-bar />
-
-    <default-view />
-    <v-btn
-        :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
-        @click="onClick"
-      >Toggle Theme</v-btn>
+      <default-bar/>
+      <default-view/>
     </v-main>
+    <app-drawer/>
   </v-app>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import DefaultBar from "./AppBar.vue";
 import DefaultView from "./View.vue";
-import { ref } from 'vue';
-const theme = ref('light');
+import AppDrawer from "@/layouts/default/AppDrawer.vue";
+import {useAppStore} from "@/store/app";
+import {useDisplay} from "vuetify";
+import {onMounted, watch} from "vue";
 
-  function onClick (): void {
-    theme.value = theme.value === 'light' ? 'dark' : 'light'
-  }
+const appStore = useAppStore();
+const {width, mobile} = useDisplay();
+
+onMounted(() => {
+  console.log(width.value); // 960
+  console.log(mobile.value); // true
+});
+
+watch(width, (val, oldVal) => {
+  console.log(`watch: ${oldVal} -> ${val}`);
+});
 </script>
