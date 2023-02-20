@@ -1,10 +1,13 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
   plugins: [vue()],
   test: {
     globals: true,
-    environment: 'jsdom',
+    environment: "jsdom",
+    deps: {
+      inline: [/@nuxt\/test-utils-edge/],
+    },
   },
-})
+});
