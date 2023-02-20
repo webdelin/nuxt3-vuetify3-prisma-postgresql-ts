@@ -1,5 +1,5 @@
 {
-  "name": "vuetify-project",
+  "name": "nuxt3-vuetify3-prisma",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -10,29 +10,46 @@
     "lint": "eslint . --fix --ignore-path .gitignore",
     "lint:js": "eslint --ext \".ts,.vue\" --ignore-path .gitignore .",
     "lint:prettier": "prettier --check .",
-    "lintfix": "prettier --write --list-different . && yarn lint:js --fix"
+    "lintfix": "prettier --write --list-different . && yarn lint:js --fix",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "test-prisma": "yarn docker:up && yarn prisma migrate deploy && vitest",
+    "ci:test": "yarn prisma migrate deploy && vitest",
+    "prisma:generate": "dotenv -e .env -- npx prisma generate",
+    "prisma:migrate": "dotenv -e .env -- npx prisma migrate deploy --name prod"
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
-    "@nuxt/test-utils-edge": "^3.2.3-rc.0-27948184.eaeb4f0",
     "@vue/test-utils": "^2.2.10",
+    "@vueuse/core": "^9.3.1",
     "core-js": "^3.8.3",
+    "bcrypt": "^5.1.0",
     "pinia": "^2.0.23",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
+    "nodemailer": "^6.8.0",
     "vue-router": "^4.0.0",
     "vuetify": "^3.0.0",
+    "stripe": "^10.15.0",
+    "uuid": "^9.0.0",
+    "zod": "^3.19.1",
+    "prisma": "^4.10.1",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
+    "@nuxt/content": "^2.2.1",
     "@nuxt/test-utils": "^3.2.2",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@prisma/client": "^4.10.1",
+    "@nuxt/test-utils-edge": "^3.2.3-rc.0-27948184.eaeb4f0",
+    "@types/bcrypt": "^5.0.0",
+    "@types/uuid": "^8.3.4",
     "@types/node": "^18.11.9",
     "@types/webfontloader": "^1.6.35",
     "@typescript-eslint/parser": "^5.48.2",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",
+    "dotenv-cli": "^6.0.0",
     "eslint": "^8.32.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -40,12 +57,14 @@
     "eslint-plugin-vue": "^9.3.0",
     "jsdom": "^21.1.0",
     "prettier": "^2.8.3",
-    "prisma": "^4.10.1",
     "sass": "^1.55.0",
     "typescript": "^4.9.4",
     "vite": "^3.1.9",
     "vite-plugin-vuetify": "^1.0.0-alpha.12",
     "vitest": "^0.27.3",
     "vue-tsc": "^1.0.9"
+  },
+  "prisma": {
+    "schema": "src/server/database/schema.prisma"
   }
 }
