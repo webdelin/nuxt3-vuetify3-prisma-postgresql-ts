@@ -2,23 +2,84 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id               String         @id @default(uuid())
+  loginType        String?        @default("email")
+  password         String?
+  email            String?        @unique
+  name             String?
+  username         String?        @unique
+  role             Role           @relation(fields: [roleId], references: [id])
+  session          Session[]
+  stripeCustomerId String?
+  Subscription     Subscription[]
+  option           Json
+  roleId           String
+  posts            Post[]
+}
+
+model Role {
+  id   String @id @default(uuid())
+  role Roles
+  User User[]
+}
+
+enum Roles {
+  USER
+  WRITER
+  MANAGER
+  ADMIN
+  DEVELOPER
+}
+
+model Session {
+  id        String    @id @default(uuid())
+  authToken String    @unique
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Subscription {
+  id            String  @id @default(uuid())
+  user          User    @relation(fields: [userId], references: [id])
+  userId        String
+  stripeId      String  @unique
+  stripeStatus  String?
+  stripePriceId String?
+  quantity      Int?
+  trialEndsAt   Int?
+  endsAt        Int?
+  startDate     Int
+  lastEventDate Int
+}
+
 model Post {
-  id          Int       @id @default(autoincrement())
-  title       String
+  id          String    @id @default(uuid())
+  title       String?
   description String?
   comments    Comment[]
+  User        User?     @relation(fields: [userId], references: [id])
+  userId      String?
+
+  @@index([title, description])
 }
 
 model Comment {
-  id     Int   @id @default(autoincrement())
-  Post   Post? @relation(fields: [postId], references: [id])
-  postId Int?
+  id          String  @id @default(uuid())
+  title       String?
+  description String?
+  Post        Post?   @relation(fields: [postId], references: [id])
+  postId      String?
 }
